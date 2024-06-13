@@ -1,0 +1,11 @@
+@import "~scss/font.scss";
+@import "~scss/vars.scss";
+@import "~scss/_mixins";
+@import "~scss/common.scss";
+@import "~scss/form/common.scss";
+@import "~scss/component/common.scss";
+@import "~scss/menu/common.scss";
+@import "~scss/block/common";
+
+.mainMenu { display: flex; padding: 24px; }
+.page { padding: 60px 24px; }
