@@ -26,10 +26,6 @@ module.exports = (env, argv) => {
 				import: './extension/entry.tsx', 
 				filename: 'extension/js/main.js',
 			},
-			tests: {
-				import: './tests/entry.tsx', 
-				filename: 'tests/main.js',
-			},
 		},
 
 		resolve: {
