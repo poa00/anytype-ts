@@ -10,6 +10,7 @@
         "moduleResolution": "Node",
         "experimentalDecorators": false,
         "allowSyntheticDefaultImports": true,
+		"esModuleInterop": true,
         "allowJs": true,
         "baseUrl": "./src",
 		"lib": [ "es5", "dom" ],

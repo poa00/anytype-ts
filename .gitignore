@@ -25,3 +25,7 @@ licenses.json
 /darwin-amd*/
 /darwin-arm*/
 /windows/
+/test-results/
+/playwright-report/
+/blob-report/
+/playwright/.cache/

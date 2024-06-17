@@ -1,5 +1,5 @@
 import { Rpc } from 'dist/lib/pb/protos/commands_pb';
-import { Decode, Mapper, dispatcher } from 'Lib';
+import { Decode, Mapper } from 'Lib';
 
 export const AppGetVersion = (response: Rpc.App.GetVersion.Response) => {
 	return {

@@ -4,8 +4,7 @@ import { detailStore } from 'Store';
 import { I, UtilCommon, Mark, Storage, dispatcher, Encode, Mapper } from 'Lib';
 
 const Constant = require('json/constant.json');
-
-const Rpc = Commands.Rpc;
+const { Rpc, Empty } = Commands;
 
 export const MetricsSetParameters = (platform: I.Platform, version: string, callBack?: (message: any) => void) => {
 	const request = new Rpc.Metrics.SetParameters.Request();
@@ -35,7 +34,7 @@ export const LinkPreview = (url: string, callBack?: (message: any) => void) => {
 // ---------------------- GALLERY ---------------------- //
 
 export const GalleryDownloadIndex = (callBack?: (message: any) => void) => {
-	dispatcher.request(GalleryDownloadIndex.name, new Commands.Empty(), callBack);
+	dispatcher.request(GalleryDownloadIndex.name, new Empty(), callBack);
 };
 
 export const GalleryDownloadManifest = (url: string, callBack?: (message: any) => void) => {
@@ -49,11 +48,11 @@ export const GalleryDownloadManifest = (url: string, callBack?: (message: any) =
 // ---------------------- APP ---------------------- //
 
 export const AppShutdown = (callBack?: (message: any) => void) => {
-	dispatcher.request(AppShutdown.name, new Commands.Empty(), callBack);
+	dispatcher.request(AppShutdown.name, new Empty(), callBack);
 };
 
 export const AppGetVersion = (callBack?: (message: any) => void) => {
-	dispatcher.request(AppGetVersion.name, new Commands.Empty(), callBack);
+	dispatcher.request(AppGetVersion.name, new Empty(), callBack);
 };
 
 // ---------------------- WALLET ---------------------- //
@@ -201,11 +200,11 @@ export const AccountStop = (removeData: boolean, callBack?: (message: any) => vo
 };
 
 export const AccountDelete = (callBack?: (message: any) => void) => {
-	dispatcher.request(AccountDelete.name, new Commands.Empty(), callBack);
+	dispatcher.request(AccountDelete.name, new Empty(), callBack);
 };
 
 export const AccountRevertDeletion = (callBack?: (message: any) => void) => {
-	dispatcher.request(AccountRevertDeletion.name, new Commands.Empty(), callBack);
+	dispatcher.request(AccountRevertDeletion.name, new Empty(), callBack);
 };
 
 export const AccountRecoverFromLegacyExport = (path: string, rootPath: string, icon: number, callBack?: (message: any) => void) => {
@@ -284,7 +283,7 @@ export const FileListOffload = (ids: string[], notPinned: boolean, callBack?: (m
 
 
 export const FileNodeUsage = (callBack?: (message: any) => void) => {
-	dispatcher.request(FileNodeUsage.name, new Commands.Empty(), callBack);
+	dispatcher.request(FileNodeUsage.name, new Empty(), callBack);
 };
 
 export const NavigationGetObjectInfoWithLinks = (pageId: string, callBack?: (message: any) => void) => {
@@ -1950,7 +1949,7 @@ export const MembershipRegisterPaymentRequest = (tier: I.TierType, method: I.Pay
 };
 
 export const MembershipGetPortalLinkUrl = (callBack?: (message: any) => void) => {
-	const request = new Commands.Empty();
+	const request = new Empty();
 	dispatcher.request(MembershipGetPortalLinkUrl.name, request, callBack);
 };
 
