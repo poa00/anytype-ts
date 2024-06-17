@@ -32,10 +32,7 @@ export default defineConfig({
 			build: {
 				rollupOptions: {
 					external: [
-						"dist/lib/pb/protos/commands_pb",
-						"dist/lib/pkg/lib/pb/model/protos/models_pb",
-						"dist/lib/pb/protos/service/service_grpc_web_pb",
-						"dist/lib/pb/protos/events_pb",
+						/dist\/lib\/*/,
 					]
 				}
 			},
