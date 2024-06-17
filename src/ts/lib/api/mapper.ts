@@ -1,11 +1,11 @@
 import { I, M, UtilCommon, Encode, Decode } from 'Lib';
-import { Rpc } from 'dist/lib/pb/protos/commands_pb';
-import Model from 'dist/lib/pkg/lib/pb/model/protos/models_pb';
-import Events from 'dist/lib/pb/protos/events_pb';
+import { Commands, Model, Events } from './pb';
+
+const { Rpc } = Commands;
 
 export const Mapper = {
 
-	BlockType: (v: Model.Block.ContentCase): I.BlockType => {
+	BlockType: (v: number): I.BlockType => {
 		const V = Model.Block.ContentCase;
 
 		let t = I.BlockType.Empty;
@@ -28,7 +28,7 @@ export const Mapper = {
 		return t;
 	},
 
-	BoardGroupType (v: Model.Block.Content.Dataview.Group.ValueCase) {
+	BoardGroupType (v: number) {
 		const V = Model.Block.Content.Dataview.Group.ValueCase;
 
 		let t = '';
@@ -39,7 +39,7 @@ export const Mapper = {
 		return t;
 	},
 
-	NotificationPayload (v: Model.Notification.PayloadCase) {
+	NotificationPayload (v: number) {
 		const V = Model.Notification.PayloadCase;
 
 		let t = '';
@@ -58,7 +58,7 @@ export const Mapper = {
 
 	From: {
 
-		Account: (obj: Model.Account): I.Account => {
+		Account: (obj: any): I.Account => {
 			return {
 				id: obj.getId(),
 				info: obj.hasInfo() ? Mapper.From.AccountInfo(obj.getInfo()) : null,
@@ -67,7 +67,7 @@ export const Mapper = {
 			};
 		},
 
-		AccountInfo: (obj: Model.Account.Info): I.AccountInfo => {
+		AccountInfo: (obj: any): I.AccountInfo => {
 			return {
 				homeObjectId: obj.getHomeobjectid(),
 				profileObjectId: obj.getProfileobjectid(),
@@ -82,11 +82,11 @@ export const Mapper = {
 			};
 		},
 
-		AccountConfig: (obj: Model.Account.Config): I.AccountConfig => {
+		AccountConfig: (obj: any): I.AccountConfig => {
 			return {};
 		},
 
-		AccountStatus: (obj: Model.Account.Status): I.AccountStatus => {
+		AccountStatus: (obj: any): I.AccountStatus => {
 			return {
 				type: obj.getStatustype() as number,
 				date: obj.getDeletiondate(),
@@ -106,14 +106,14 @@ export const Mapper = {
 			return Decode.struct(obj);
 		},
 
-		Range: (obj: Model.Range): I.TextRange => {
+		Range: (obj: any): I.TextRange => {
 			return {
 				from: obj.getFrom(),
 				to: obj.getTo(),
 			};
 		},
 
-		Mark: (obj: Model.Block.Content.Text.Mark): I.Mark => {
+		Mark: (obj: any): I.Mark => {
 			return {
 				type: obj.getType() as number,
 				param: obj.getParam(),
@@ -121,7 +121,7 @@ export const Mapper = {
 			};
 		},
 
-		PreviewLink: (obj: Model.LinkPreview) => {
+		PreviewLink: (obj: any) => {
             return {
                 type: obj.getType(),
                 title: obj.getTitle(),
@@ -147,19 +147,19 @@ export const Mapper = {
 			return {};
 		},
 
-		BlockLayout: (obj: Model.Block.Content.Layout) => {
+		BlockLayout: (obj: any) => {
 			return {
 				style: obj.getStyle(),
 			};
 		},
 
-		BlockDiv: (obj: Model.Block.Content.Div) => {
+		BlockDiv: (obj: any) => {
 			return {
 				style: obj.getStyle(),
 			};
 		},
 
-		BlockLink: (obj: Model.Block.Content.Link) => {
+		BlockLink: (obj: any) => {
 			return {
 				targetBlockId: obj.getTargetblockid(),
 				iconSize: obj.getIconsize(),
@@ -169,7 +169,7 @@ export const Mapper = {
 			};
 		},
 
-		BlockBookmark: (obj: Model.Block.Content.Bookmark) => {
+		BlockBookmark: (obj: any) => {
 			return {
 				targetObjectId: obj.getTargetobjectid(),
 				state: obj.getState(),
@@ -177,7 +177,7 @@ export const Mapper = {
 			};
 		},
 
-		BlockText: (obj: Model.Block.Content.Text) => {
+		BlockText: (obj: any) => {
 			let marks = [];
 			if (obj.hasMarks()) {
 				marks = (obj.getMarks().getMarksList() || []).map(Mapper.From.Mark);
@@ -194,7 +194,7 @@ export const Mapper = {
 			};
 		},
 
-		BlockFile: (obj: Model.Block.Content.File) => {
+		BlockFile: (obj: any) => {
 			return {
 				targetObjectId: obj.getTargetobjectid(),
 				type: obj.getType(),
@@ -204,7 +204,7 @@ export const Mapper = {
 			};
 		},
 
-		BlockDataview: (obj: Model.Block.Content.Dataview) => {
+		BlockDataview: (obj: any) => {
 			return {
 				sources: obj.getSourceList(),
 				viewId: obj.getActiveview(),
@@ -217,13 +217,13 @@ export const Mapper = {
 			};
 		},
 
-		BlockRelation: (obj: Model.Block.Content.Relation) => {
+		BlockRelation: (obj: any) => {
 			return {
 				key: obj.getKey(),
 			};
 		},
 
-		BlockLatex: (obj: Model.Block.Content.Latex) => {
+		BlockLatex: (obj: any) => {
 			return {
 				text: obj.getText(),
 				processor: obj.getProcessor(),
@@ -242,13 +242,13 @@ export const Mapper = {
 			return {};
 		},
 
-		BlockTableRow: (obj: Model.Block.Content.TableRow) => {
+		BlockTableRow: (obj: any) => {
 			return {
 				isHeader: obj.getIsheader(),
 			};
 		},
 
-		BlockWidget: (obj: Model.Block.Content.Widget) => {
+		BlockWidget: (obj: any) => {
 			return {
 				layout: obj.getLayout(),
 				limit: obj.getLimit(),
@@ -256,7 +256,7 @@ export const Mapper = {
 			};
 		},
 
-		Block: (obj: Model.Block): I.Block => {
+		Block: (obj: any): I.Block => {
 			const cc = obj.getContentCase();
 			const type = Mapper.BlockType(obj.getContentCase());
 			const fn = `get${UtilCommon.ucFirst(type)}`;
@@ -295,14 +295,14 @@ export const Mapper = {
 			};
 		},
 
-		RelationLink: (obj: Model.RelationLink): any => {
+		RelationLink: (obj: any): any => {
 			return {
 				relationKey: obj.getKey(),
 				format: obj.getFormat(),
 			};
 		},
 
-		View: (obj: Model.Block.Content.Dataview.View): I.View => {
+		View: (obj: any): I.View => {
 			return Object.assign({
 				id: obj.getId(),
 				sorts: obj.getSortsList().map(Mapper.From.Sort),
@@ -327,7 +327,7 @@ export const Mapper = {
 			};
 		},
 
-		ViewRelation: (obj: Model.Block.Content.Dataview.Relation) => {
+		ViewRelation: (obj: any) => {
             return {
                 relationKey: obj.getKey(),
                 isVisible: obj.getIsvisible(),
@@ -338,7 +338,7 @@ export const Mapper = {
             };
         },
 
-		Filter: (obj: Model.Block.Content.Dataview.Filter): I.Filter => {
+		Filter: (obj: any): I.Filter => {
 			return {
 				id: obj.getId(),
 				relationKey: obj.getRelationkey(),
@@ -349,7 +349,7 @@ export const Mapper = {
 			};
 		},
 
-		Sort: (obj: Model.Block.Content.Dataview.Sort): I.Sort => {
+		Sort: (obj: any): I.Sort => {
 			return {
 				id: obj.getId(),
 				relationKey: obj.getRelationkey(),
@@ -359,7 +359,7 @@ export const Mapper = {
 			};
 		},
 
-		HistoryVersion: (obj: Rpc.History.Version): I.HistoryVersion => {
+		HistoryVersion: (obj: any): I.HistoryVersion => {
 			return {
 				id: obj.getId(),
 				previousIds: obj.getPreviousidsList() || [],
@@ -414,7 +414,7 @@ export const Mapper = {
             };
         },
 
-		GraphEdge: (obj: Rpc.Object.Graph.Edge) => {
+		GraphEdge: (obj: any) => {
             return {
 				type: obj.getType(),
 				source: obj.getSource(),
@@ -427,7 +427,7 @@ export const Mapper = {
             };
         },
 
-		UnsplashPicture: (obj: Rpc.Unsplash.Search.Response.Picture) => {
+		UnsplashPicture: (obj: any) => {
 			return {
                 id: obj.getId(),
 				url: obj.getUrl(),
@@ -436,7 +436,7 @@ export const Mapper = {
             };
 		},
 
-		ObjectView: (obj: Model.ObjectView) => {
+		ObjectView: (obj: any) => {
 			return {
 				rootId: obj.getRootid(),
 				blocks: (obj.getBlocksList() || []).map(Mapper.From.Block),
@@ -471,7 +471,7 @@ export const Mapper = {
 			};
 		},
 
-		GroupOrder: (obj: Model.Block.Content.Dataview.GroupOrder) => {
+		GroupOrder: (obj: any) => {
 			return {
 				viewId: obj.getViewid(),
 				groups: (obj.getViewgroupsList() || []).map((it: any) => {
@@ -485,7 +485,7 @@ export const Mapper = {
 			};
 		},
 
-		ObjectOrder: (obj: Model.Block.Content.Dataview.ObjectOrder) => {
+		ObjectOrder: (obj: any) => {
 			return {
 				viewId: obj.getViewid(),
 				groupId: obj.getGroupid(),
@@ -500,7 +500,7 @@ export const Mapper = {
 			};
 		},
 
-		Notification: (obj: Model.Notification): I.Notification => {
+		Notification: (obj: any): I.Notification => {
 			const type = Mapper.NotificationPayload(obj.getPayloadCase());
 			const fn = `get${UtilCommon.ucFirst(type)}`;
 			const field = obj[fn] ? obj[fn]() : null;
@@ -581,7 +581,7 @@ export const Mapper = {
 			};
 		},
 
-		Manifest: (obj: Model.ManifestInfo) => {
+		Manifest: (obj: any) => {
 			return {
 				id: obj.getId(),
 				schema: obj.getSchema(),
@@ -597,7 +597,7 @@ export const Mapper = {
 			};
 		},
 
-		Membership: (obj: Model.Membership): I.Membership => {
+		Membership: (obj: any): I.Membership => {
 			return {
 				tier: obj.getTier(),
 				status: obj.getStatus() as number,
@@ -612,7 +612,7 @@ export const Mapper = {
 			};
 		},
 
-		MembershipTierData: (obj: Model.MembershipTierData): I.MembershipTier => {
+		MembershipTierData: (obj: any): I.MembershipTier => {
 			return {
 				id: obj.getId(),
 				name: obj.getName(),
@@ -628,7 +628,7 @@ export const Mapper = {
 			};
 		},
 
-		Process: (obj: Events.Model.Process) => {
+		Process: (obj: any) => {
 			return {
 				id: obj.getId(),
 				state: obj.getState() as number,
@@ -637,7 +637,7 @@ export const Mapper = {
 			};
 		},
 
-		Progress: (obj: Events.Model.Process.Progress) => {
+		Progress: (obj: any) => {
 			return {
 				done: obj.getDone(),
 				total: obj.getTotal(),
@@ -645,7 +645,7 @@ export const Mapper = {
 			};
 		},
 
-		MetaList: (obj: Model.Search.Meta): any => {
+		MetaList: (obj: any): any => {
 			return {
 				highlight: obj.getHighlight(),
 				blockId: obj.getBlockid(),
@@ -1079,31 +1079,31 @@ export const Mapper = {
 			return e[fn] ? e[fn]() : {};
 		},
 
-		AccountShow: (obj: Events.Event.Account.Show) => {
+		AccountShow: (obj: any) => {
 			return {
 				account: Mapper.From.Account(obj.getAccount()),
 			};
 		},
 
-		AccountUpdate: (obj: Events.Event.Account.Update) => {
+		AccountUpdate: (obj: any) => {
 			return {
 				status: Mapper.From.AccountStatus(obj.getStatus()),
 			};
 		},
 
-		AccountConfigUpdate: (obj: Events.Event.Account.Config.Update) => {
+		AccountConfigUpdate: (obj: any) => {
 			return {
 				config: Mapper.From.AccountConfig(obj.getConfig()),
 			};
 		},
 
-		AccountLinkChallenge: (obj: Events.Event.Account.LinkChallenge) => {
+		AccountLinkChallenge: (obj: any) => {
 			return {
 				challenge: obj.getChallenge(),
 			};
 		},
 
-		ThreadStatus: (obj: Events.Event.Status.Thread) => {
+		ThreadStatus: (obj: any) => {
 			return {
 				summary: Mapper.From.ThreadSummary(obj.getSummary()),
 				cafe: Mapper.From.ThreadCafe(obj.getCafe()),
@@ -1111,72 +1111,72 @@ export const Mapper = {
 			};
 		},
 
-		ObjectRelationsAmend: (obj: Events.Event.Object.Relations.Amend) => {
+		ObjectRelationsAmend: (obj: any) => {
 			return {
 				id: obj.getId(),
 				relations: (obj.getRelationlinksList() || []).map(Mapper.From.RelationLink),
 			};
 		},
 
-		ObjectRelationsRemove: (obj: Events.Event.Object.Relations.Remove) => {
+		ObjectRelationsRemove: (obj: any) => {
 			return {
 				id: obj.getId(),
 				relationKeys: obj.getRelationkeysList() || [],
 			};
 		},
 
-		ObjectRestrictionsSet: (obj: Events.Event.Object.Restrictions.Set) => {
+		ObjectRestrictionsSet: (obj: any) => {
 			return {
 				restrictions: Mapper.From.Restrictions(obj.getRestrictions()),
 			};
 		},
 
-		FileSpaceUsage: (obj: Events.Event.File.SpaceUsage) => {
+		FileSpaceUsage: (obj: any) => {
 			return {
 				spaceId: obj.getSpaceid(),
 				bytesUsage: obj.getBytesusage(),
 			};
 		},
 
-		FileLocalUsage: (obj: Events.Event.File.LocalUsage) => {
+		FileLocalUsage: (obj: any) => {
 			return {
 				localUsage: obj.getLocalbytesusage(),
 			};
 		},
 
-		FileLimitUpdated: (obj: Events.Event.File.LimitUpdated) => {
+		FileLimitUpdated: (obj: any) => {
 			return {
 				bytesLimit: obj.getByteslimit(),
 			};
 		},
 
-		BlockAdd: (obj: Events.Event.Block.Add) => {
+		BlockAdd: (obj: any) => {
 			return {
 				blocks: (obj.getBlocksList() || []).map(Mapper.From.Block),
 			};
 		},
 
-		BlockDelete: (obj: Events.Event.Block.Delete) => {
+		BlockDelete: (obj: any) => {
 			return {
 				blockIds: obj.getBlockidsList() || [],
 			};
 		},
 
-		BlockSetChildrenIds: (obj: Events.Event.Block.Set.ChildrenIds) => {
+		BlockSetChildrenIds: (obj: any) => {
 			return {
 				id: obj.getId(),
 				childrenIds: obj.getChildrenidsList() || [],
 			};
 		},
 
-		BlockSetFields: (obj: Events.Event.Block.Set.Fields) => {
+		BlockSetFields: (obj: any) => {
 			return {
 				id: obj.getId(),
 				fields: obj.hasFields() ? Decode.struct(obj.getFields()) : {},
 			};
 		},
 
-		BlockSetLink: (obj: Events.Event.Block.Set.Link) => {
+		BlockSetLink: (obj: any) => {
 			return {
 				id: obj.getId(),
 				targetBlockId: obj.hasTargetblockid() ? obj.getTargetblockid().getValue() : null,
@@ -1188,7 +1188,7 @@ export const Mapper = {
 			};
 		},
 
-		BlockSetText: (obj: Events.Event.Block.Set.Text) => {
+		BlockSetText: (obj: any) => {
 			return {
 				id: obj.getId(),
 				text: obj.hasText() ? obj.getText().getValue() : null,
@@ -1201,28 +1201,28 @@ export const Mapper = {
 			};
 		},
 
-		BlockSetDiv: (obj: Events.Event.Block.Set.Div) => {
+		BlockSetDiv: (obj: any) => {
 			return {
 				id: obj.getId(),
 				style: obj.hasStyle() ? obj.getStyle().getValue() : null,
 			};
 		},
 
-		BlockDataviewTargetObjectIdSet: (obj: Events.Event.Block.Dataview.TargetObjectIdSet) => {
+		BlockDataviewTargetObjectIdSet: (obj: any) => {
 			return {
 				id: obj.getId(),
 				targetObjectId: obj.getTargetobjectid(),
 			};
 		},
 
-		BlockDataviewIsCollectionSet: (obj: Events.Event.Block.Dataview.IsCollectionSet) => {
+		BlockDataviewIsCollectionSet: (obj: any) => {
 			return {
 				id: obj.getId(),
 				isCollection: obj.getValue(),
 			};
 		},
 
-		BlockSetWidget: (obj: Events.Event.Block.Set.Widget) => {
+		BlockSetWidget: (obj: any) => {
 			return {
 				id: obj.getId(),
 				layout: obj.hasLayout() ? obj.getLayout().getValue() : null,
@@ -1231,7 +1231,7 @@ export const Mapper = {
 			};
 		},
 
-		BlockSetFile: (obj: Events.Event.Block.Set.File) => {
+		BlockSetFile: (obj: any) => {
 			return {
 				id: obj.getId(),
 				targetObjectId: obj.hasTargetobjectid() ? obj.getTargetobjectid().getValue() : null,
@@ -1241,7 +1241,7 @@ export const Mapper = {
 			};
 		},
 
-		BlockSetBookmark: (obj: Events.Event.Block.Set.Bookmark) => {
+		BlockSetBookmark: (obj: any) => {
 			return {
 				id: obj.getId(),
 				targetObjectId: obj.hasTargetobjectid() ? obj.getTargetobjectid().getValue() : null,
@@ -1249,56 +1249,56 @@ export const Mapper = {
 			};
 		},
 
-		BlockSetBackgroundColor: (obj: Events.Event.Block.Set.BackgroundColor) => {
+		BlockSetBackgroundColor: (obj: any) => {
 			return {
 				id: obj.getId(),
 				bgColor: obj.getBackgroundcolor(),
 			};
 		},
 
-		BlockSetAlign: (obj: Events.Event.Block.Set.Align) => {
+		BlockSetAlign: (obj: any) => {
 			return {
 				id: obj.getId(),
 				align: obj.getAlign(),
 			};
 		},
 
-		BlockSetVerticalAlign: (obj: Events.Event.Block.Set.VerticalAlign) => {
+		BlockSetVerticalAlign: (obj: any) => {
 			return {
 				id: obj.getId(),
 				align: obj.getVerticalalign(),
 			};
 		},
 
-		BlockSetRelation: (obj: Events.Event.Block.Set.Relation) => {
+		BlockSetRelation: (obj: any) => {
 			return {
 				id: obj.getId(),
 				key: obj.hasKey() ? obj.getKey().getValue() : null,
 			};
 		},
 
-		BlockSetLatex: (obj: Events.Event.Block.Set.Latex) => {
+		BlockSetLatex: (obj: any) => {
 			return {
 				id: obj.getId(),
 				text: obj.hasText() ? obj.getText().getValue() : null,
 			};
 		},
 
-		BlockSetTableRow: (obj: Events.Event.Block.Set.TableRow) => {
+		BlockSetTableRow: (obj: any) => {
 			return {
 				id: obj.getId(),
 				isHeader: obj.hasIsheader() ? obj.getIsheader().getValue() : null,
 			};
 		},
 
-		BlockDataviewViewSet: (obj: Events.Event.Block.Dataview.ViewSet) => {
+		BlockDataviewViewSet: (obj: any) => {
 			return {
 				id: obj.getId(),
 				view: Mapper.From.View(obj.getView()),
 			};
 		},
 
-		BlockDataviewViewUpdate: (obj: Events.Event.Block.Dataview.ViewUpdate) => {
+		BlockDataviewViewUpdate: (obj: any) => {
 			const ret = {
 				id: obj.getId(),
 				viewId: obj.getViewid(),
@@ -1355,42 +1355,42 @@ export const Mapper = {
 			return ret;
 		},
 
-		BlockDataviewViewDelete: (obj: Events.Event.Block.Dataview.ViewDelete) => {
+		BlockDataviewViewDelete: (obj: any) => {
 			return {
 				id: obj.getId(),
 				viewId: obj.getViewid(),
 			};
 		},
 
-		BlockDataviewViewOrder: (obj: Events.Event.Block.Dataview.ViewOrder) => {
+		BlockDataviewViewOrder: (obj: any) => {
 			return {
 				id: obj.getId(),
 				viewIds: obj.getViewidsList() || [],
 			};
 		},
 
-		BlockDataviewRelationDelete: (obj: Events.Event.Block.Dataview.RelationDelete) => {
+		BlockDataviewRelationDelete: (obj: any) => {
 			return {
 				id: obj.getId(),
 				relationKeys: obj.getRelationkeysList() || [],
 			};
 		},
 
-		BlockDataviewRelationSet: (obj: Events.Event.Block.Dataview.RelationSet) => {
+		BlockDataviewRelationSet: (obj: any) => {
 			return {
 				id: obj.getId(),
 				relations: (obj.getRelationlinksList() || []).map(Mapper.From.RelationLink),
 			};
 		},
 
-		BlockDataviewGroupOrderUpdate: (obj: Events.Event.Block.Dataview.GroupOrderUpdate) => {
+		BlockDataviewGroupOrderUpdate: (obj: any) => {
 			return {
 				id: obj.getId(),
 				groupOrder: obj.hasGrouporder() ? Mapper.From.GroupOrder(obj.getGrouporder()) : null,
 			};
 		},
 
-		BlockDataviewObjectOrderUpdate: (obj: Events.Event.Block.Dataview.ObjectOrderUpdate) => {
+		BlockDataviewObjectOrderUpdate: (obj: any) => {
 			return {
 				id: obj.getId(),
 				groupId: obj.getGroupid(),
@@ -1405,7 +1405,7 @@ export const Mapper = {
 			};
 		},
 
-		ObjectDetailsSet: (obj: Events.Event.Object.Details.Set) => {
+		ObjectDetailsSet: (obj: any) => {
 			return {
 				id: obj.getId(),
 				subIds: obj.getSubidsList() || [],
@@ -1413,7 +1413,7 @@ export const Mapper = {
 			};
 		},
 
-		ObjectDetailsAmend: (obj: Events.Event.Object.Details.Amend) => {
+		ObjectDetailsAmend: (obj: any) => {
 			const details = {};
 
 			(obj.getDetailsList() || []).forEach(it => {
@@ -1427,7 +1427,7 @@ export const Mapper = {
 			};
 		},
 
-		ObjectDetailsUnset: (obj: Events.Event.Object.Details.Unset) => {
+		ObjectDetailsUnset: (obj: any) => {
 			return {
 				id: obj.getId(),
 				subIds: obj.getSubidsList() || [],
@@ -1435,7 +1435,7 @@ export const Mapper = {
 			};
 		},
 
-		SubscriptionAdd: (obj: Events.Event.Object.Subscription.Add) => {
+		SubscriptionAdd: (obj: any) => {
 			return {
 				id: obj.getId(),
 				afterId: obj.getAfterid(),
@@ -1443,14 +1443,14 @@ export const Mapper = {
 			};
 		},
 
-		SubscriptionRemove: (obj: Events.Event.Object.Subscription.Remove) => {
+		SubscriptionRemove: (obj: any) => {
 			return {
 				id: obj.getId(),
 				subId: obj.getSubid(),
 			};
 		},
 
-		SubscriptionPosition: (obj: Events.Event.Object.Subscription.Position) => {
+		SubscriptionPosition: (obj: any) => {
 			return {
 				id: obj.getId(),
 				afterId: obj.getAfterid(),
@@ -1458,14 +1458,14 @@ export const Mapper = {
 			};
 		},
 
-		SubscriptionCounters: (obj: Events.Event.Object.Subscription.Counters) => {
+		SubscriptionCounters: (obj: any) => {
 			return {
 				total: obj.getTotal(),
 				subId: obj.getSubid(),
 			};
 		},
 
-		SubscriptionGroups: (obj: Events.Event.Object.Subscription.Groups) => {
+		SubscriptionGroups: (obj: any) => {
 			return {
 				subId: obj.getSubid(),
 				group: Mapper.From.BoardGroup(obj.getGroup()),
@@ -1473,43 +1473,43 @@ export const Mapper = {
 			};
 		},
 
-		NotificationSend: (obj: Events.Event.Notification.Send) => {
+		NotificationSend: (obj: any) => {
 			return {
 				notification: Mapper.From.Notification(obj.getNotification()),
 			};
 		},
 
-		NotificationUpdate: (obj: Events.Event.Notification.Update) => {
+		NotificationUpdate: (obj: any) => {
 			return {
 				notification: Mapper.From.Notification(obj.getNotification()),
 			};
 		},
 
-		PayloadBroadcast: (obj: Events.Event.Payload.Broadcast) => {
+		PayloadBroadcast: (obj: any) => {
 			return {
 				payload: obj.getPayload(),
 			};
 		},
 
-		MembershipUpdate: (obj: Events.Event.Membership.Update) => {
+		MembershipUpdate: (obj: any) => {
 			return {
 				membership: Mapper.From.Membership(obj.getData()),
 			};
 		},
 
-		ProcessNew: (obj: Events.Event.Process.New) => {
+		ProcessNew: (obj: any) => {
 			return {
 				process: Mapper.From.Process(obj.getProcess()),
 			};
 		},
 
-		ProcessUpdate: (obj: Events.Event.Process.Update) => {
+		ProcessUpdate: (obj: any) => {
 			return {
 				process: Mapper.From.Process(obj.getProcess()),
 			};
 		},
 
-		ProcessDone: (obj: Events.Event.Process.Done) => {
+		ProcessDone: (obj: any) => {
 			return {
 				process: Mapper.From.Process(obj.getProcess()),
 			};

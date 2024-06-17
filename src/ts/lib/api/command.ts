@@ -1,7 +1,8 @@
-import Commands from 'dist/lib/pb/protos/commands_pb';
-import Model from 'dist/lib/pkg/lib/pb/model/protos/models_pb';
+//import Commands from 'dist/lib/pb/protos/commands_pb';
+//import Model from 'dist/lib/pkg/lib/pb/model/protos/models_pb';
 import { detailStore } from 'Store';
 import { I, UtilCommon, Mark, Storage, dispatcher, Encode, Mapper } from 'Lib';
+import { Commands, Model } from './pb';
 
 const Constant = require('json/constant.json');
 const { Rpc, Empty } = Commands;

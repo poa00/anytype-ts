@@ -29,14 +29,6 @@ export default defineConfig({
 		ctPort: 3100,
 
 		ctViteConfig: {
-			build: {
-				rollupOptions: {
-					external: [
-						/dist\/lib\/*/,
-					]
-				}
-			},
-
 			resolve: {
 				alias: {
 					"Component": resolve('./src/ts/component'),

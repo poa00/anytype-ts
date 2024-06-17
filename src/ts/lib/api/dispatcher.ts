@@ -2,15 +2,13 @@ import * as Sentry from '@sentry/browser';
 import $ from 'jquery';
 import arrayMove from 'array-move';
 import { observable, set } from 'mobx';
-import Commands from 'dist/lib/pb/protos/commands_pb';
-import Events from 'dist/lib/pb/protos/events_pb';
-import Service from 'dist/lib/pb/protos/service/service_grpc_web_pb';
 import { authStore, commonStore, blockStore, detailStore, dbStore, notificationStore } from 'Store';
 import { 
 	UtilCommon, UtilObject, I, M, translate, analytics, Renderer, Action, Dataview, Preview, Mapper, Decode, UtilRouter, Storage, UtilSpace, UtilData 
 } from 'Lib';
 import * as Response from './response';
 import { ClientReadableStream } from 'grpc-web';
+import { Commands, Events, Service } from './pb';
 
 const Constant = require('json/constant.json');
 
@@ -30,8 +28,8 @@ const SKIP_SENTRY_ERRORS = [ 'LinkPreview', 'BlockTextSetText', 'FileSpaceUsage'
 
 class Dispatcher {
 
-	service: Service.ClientCommandsClient = null;
-	stream: ClientReadableStream<Events.Event> = null;
+	service = null;
+	stream = null;
 	timeoutStream = 0;
 	timeoutEvent: any = {};
 	reconnects = 0;
@@ -97,7 +95,7 @@ class Dispatcher {
 		}, t * 1000);
 	};
 
-	event (event: Events.Event, skipDebug?: boolean) {
+	event (event: any, skipDebug?: boolean) {
 		const { config } = commonStore;
 		const traceId = event.getTraceid();
 		const ctx: string[] = [ event.getContextid() ];
