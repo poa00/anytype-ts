@@ -3,9 +3,7 @@ import { observer } from 'mobx-react';
 import $ from 'jquery';
 import raf from 'raf';
 import { Dimmer, Icon, Title } from 'Component';
-import { I, keyboard, UtilCommon, analytics, Storage } from 'Lib';
-import { menuStore, popupStore } from 'Store';
-const Constant = require('json/constant.json');
+import { I, S, U, J, keyboard, analytics, Storage } from 'Lib';
 
 import MenuHelp from './help';
 import MenuOnboarding from './onboarding';
@@ -21,9 +19,6 @@ import MenuSearchObject from './search/object';
 
 import MenuPreviewObject from './preview/object';
 import MenuPreviewLatex from './preview/latex';
-
-import MenuThreadList from './thread/list';
-import MenuThreadStatus from './thread/status';
 
 import MenuBlockContext from './block/context';
 import MenuBlockStyle from './block/style';
@@ -78,6 +73,9 @@ import MenuDataviewTemplateList from './dataview/template/list';
 
 import MenuQuickCapture from './quickCapture';
 
+import MenuSyncStatus from './syncStatus';
+import MenuSyncStatusInfo from './syncStatus/info';
+
 interface State {
 	tab: string;
 };
@@ -101,9 +99,6 @@ const Components: any = {
 
 	previewObject:			 MenuPreviewObject,
 	previewLatex:			 MenuPreviewLatex,
-
-	threadList:				 MenuThreadList,
-	threadStatus:			 MenuThreadStatus,
 	
 	blockContext:			 MenuBlockContext,
 	blockAction:			 MenuBlockAction,
@@ -157,6 +152,9 @@ const Components: any = {
 	dataviewTemplateList:	 MenuDataviewTemplateList,
 
 	quickCapture: 			 MenuQuickCapture,
+
+	syncStatus:				 MenuSyncStatus,
+	syncStatusInfo:			 MenuSyncStatusInfo,
 };
 
 const Menu = observer(class Menu extends React.Component<I.Menu, State> {
@@ -217,7 +215,7 @@ const Menu = observer(class Menu extends React.Component<I.Menu, State> {
 		};
 
 		if (component) {
-			cn.push(UtilCommon.toCamelCase('menu-' + component));
+			cn.push(U.Common.toCamelCase('menu-' + component));
 		} else {
 			cn.push(menuId);
 		};
@@ -403,7 +401,7 @@ const Menu = observer(class Menu extends React.Component<I.Menu, State> {
 			cn.push(classNameWrap);	
 		};
 
-		if (popupStore.isOpen()) {
+		if (S.Popup.isOpen()) {
 			cn.push('fromPopup');
 		};
 
@@ -442,13 +440,13 @@ const Menu = observer(class Menu extends React.Component<I.Menu, State> {
 				window.setTimeout(() => { 
 					menu.css({ transform: 'none' }); 
 					this.isAnimating = false;
-				}, menuStore.getTimeout());
+				}, S.Menu.getTimeout());
 			});
 		};
 	};
 
 	getBorderTop () {
-		return Number(window.AnytypeGlobalConfig?.menuBorderTop) || UtilCommon.sizeHeader();
+		return Number(window.AnytypeGlobalConfig?.menuBorderTop) || U.Common.sizeHeader();
 	};
 	
 	getBorderBottom () {
@@ -465,7 +463,6 @@ const Menu = observer(class Menu extends React.Component<I.Menu, State> {
 	position () {
 		const { id, param } = this.props;
 		const { element, recalcRect, type, vertical, horizontal, fixedX, fixedY, isSub, noFlipX, noFlipY, withArrow } = param;
-		const { border } = Constant.size.menu;
 		const borderTop = this.getBorderTop();
 		const borderBottom = this.getBorderBottom();
 
@@ -482,7 +479,7 @@ const Menu = observer(class Menu extends React.Component<I.Menu, State> {
 			const node = $(this.node);
 			const menu = node.find('.menu');
 			const arrow = menu.find('#arrowDirection');
-			const winSize = UtilCommon.getWindowDimensions();
+			const winSize = U.Common.getWindowDimensions();
 			const ww = winSize.ww;
 			const wh = win.scrollTop() + winSize.wh;
 			const width = param.width ? param.width : menu.outerWidth();
@@ -557,7 +554,7 @@ const Menu = observer(class Menu extends React.Component<I.Menu, State> {
 					x += offsetX;
 
 					// Switch
-					if (!noFlipX && (x >= ww - width - border)) {
+					if (!noFlipX && (x >= ww - width - J.Size.menuBorder)) {
 						x = ox - width;
 						flipX = true;
 					};
@@ -571,7 +568,7 @@ const Menu = observer(class Menu extends React.Component<I.Menu, State> {
 					x -= width + offsetX - ew;
 
 					// Switch
-					if (!noFlipX && (x <= border)) {
+					if (!noFlipX && (x <= J.Size.menuBorder)) {
 						x = ox + ew;
 						flipX = true;
 					};
@@ -583,8 +580,8 @@ const Menu = observer(class Menu extends React.Component<I.Menu, State> {
 				y -= scrollTop;
 			};
 
-			x = Math.max(border, x);
-			x = Math.min(ww - width - border, x);
+			x = Math.max(J.Size.menuBorder, x);
+			x = Math.min(ww - width - J.Size.menuBorder, x);
 
 			y = Math.max(borderTop, y);
 			y = Math.min(wh - height - borderBottom, y);
@@ -599,7 +596,7 @@ const Menu = observer(class Menu extends React.Component<I.Menu, State> {
 			menu.css(css);
 
 			if (isSub) {
-				const coords = UtilCommon.objectCopy(keyboard.mouse.page);
+				const coords = U.Common.objectCopy(keyboard.mouse.page);
 				const offset = 8;
 
 				let w = 0;
@@ -702,8 +699,8 @@ const Menu = observer(class Menu extends React.Component<I.Menu, State> {
 	};
 
 	close (callBack?: () => void) {
-		menuStore.close(this.props.id, () => {
-			window.setTimeout(() => this.rebindPrevious(), Constant.delay.menu);
+		S.Menu.close(this.props.id, () => {
+			window.setTimeout(() => this.rebindPrevious(), J.Constant.delay.menu);
 
 			if (callBack) {
 				callBack();
@@ -977,7 +974,6 @@ const Menu = observer(class Menu extends React.Component<I.Menu, State> {
 
 		const node = $(this.node);
 		const menu = node.find('.menu');
-		const { border } = Constant.size.menu;
 		
 		menu.find('.item.hover').removeClass('hover');
 
@@ -1006,7 +1002,7 @@ const Menu = observer(class Menu extends React.Component<I.Menu, State> {
 			const pt = el.position().top;
 			const eh = el.outerHeight();
 			const ch = scrollWrap.height();
-			const top = Math.max(0, st + pt + eh - border - ch);
+			const top = Math.max(0, st + pt + eh - J.Size.menuBorder - ch);
 			
 			scrollWrap.scrollTop(top);
 		};
@@ -1041,7 +1037,7 @@ const Menu = observer(class Menu extends React.Component<I.Menu, State> {
 			id = this.props.id;
 		};
 
-		return UtilCommon.toCamelCase('menu-' + id);
+		return U.Common.toCamelCase('menu-' + id);
 	};
 
 	getElement () {
