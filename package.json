@@ -91,6 +91,8 @@
 	"dependencies": {
 		"@electron/remote": "^2.1.2",
 		"@emoji-mart/data": "^1.1.2",
+		"@playwright/experimental-ct-react": "^1.44.1",
+		"@playwright/experimental-ct-react17": "^1.44.1",
 		"@sentry/browser": "^7.39.0",
 		"@sentry/cli": "^2.18.1",
 		"@types/emoji-mart": "^3.0.13",
@@ -130,6 +132,7 @@
 		"os": "^0.1.1",
 		"pako": "^2.1.0",
 		"pdfjs-dist": "^2.14.305",
+		"playwright": "^1.44.1",
 		"prismjs": "^1.21.0",
 		"qrcode.react": "^1.0.1",
 		"raf": "^3.4.1",

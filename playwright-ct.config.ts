@@ -38,7 +38,7 @@ export default defineConfig({
 					"Interface": resolve('./src/ts/interface'),
 					"Model": resolve('./src/ts/model'),
 					"Docs": resolve('./src/ts/docs'),
-					"dist": resolve('./dist'),
+					"dist": resolve('./playwright/mock/dist'),
 				},
 			},
 		},
