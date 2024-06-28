@@ -1,6 +1,5 @@
-import Commands from 'dist/lib/pb/protos/commands_pb';
-import Model from 'dist/lib/pkg/lib/pb/model/protos/models_pb';
 import { I, S, U, J, Mark, Storage, dispatcher, Encode, Mapper } from 'Lib';
+import { Commands, Model } from './pb';
 
 const { Rpc, Empty } = Commands;
 
